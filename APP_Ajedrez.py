@@ -13,14 +13,14 @@ class TableroAjedrez:
         self.ventana2.resizable(width=False, height=False)
         self.ventana2.title("Menu de inicio")
         self.ventana2.geometry("640x640")
-        self.ventana2.iconbitmap("C:/Users/jesus/PycharmProjects/pythonProject3/Imagenes/icono.ico")
+        self.ventana2.iconbitmap("Imagenes/icono.ico")
 
         # Crear un Canvas para colocar la imagen de fondo
         self.canvas = Canvas(self.ventana2, width=640, height=640)
         self.canvas.pack()
 
         # Cargar la imagen de fondo y redimensionarla al tamaño del canvas
-        imagen_original = Image.open("C:/Users/jesus/PycharmProjects/pythonProject3/Imagenes/Fondo.jpg")
+        imagen_original = Image.open("Imagenes/Fondo.jpg")
         imagen_redimensionada = imagen_original.resize((640, 640))
         self.imagen_fondo_tk = ImageTk.PhotoImage(imagen_redimensionada)
 
@@ -154,7 +154,7 @@ class TableroAjedrez:
             for j in range(8):
                 piece = self.board[i][j]
                 if piece != '  ':
-                    image = Image.open(f"C:/Users/jesus/PycharmProjects/pythonProject3/Imagenes/{piece}.png")
+                    image = Image.open(f"Imagenes/{piece}.png")
                     image = image.resize((60, 60))
                     photo = ImageTk.PhotoImage(image)
                     self.User_Interface.create_image(j * 80 + 40, i * 80 + 40, image=photo)
@@ -1137,7 +1137,7 @@ class TableroAjedrez:
         self.ventana = ventanita
         self.User_Interface = Canvas(ventanita, width=640, height=640)
         self.ventana.title("Ajedrez para dos jugadores")
-        self.ventana.iconbitmap("C:/Users/jesus/PycharmProjects/pythonProject3/Imagenes/icono.ico")
+        self.ventana.iconbitmap("Imagenes/icono.ico")
         self.User_Interface.pack()
         ventanita.resizable(width=False, height=False)
         self.User_Interface.bind("<Button-1>", self.clics)  # Función para el clic
