@@ -5,12 +5,6 @@ import pickle
 import threading
 
 
-# -------------------- FALTA CONFIGURAR LA DESTRUCCION DE LAS VENTANAS CON LOS SOCKETS
-# -------------------- FALTA CONFIGURAR EL MOVIMIENTO DEL REY, O SEA, VICTORIA
-# -------------------- FALTA CONFIGURAR LA LOGICA PARA QUE EL REY NO SE MUEVA EN LUGARES DONDE NO PUEDA
-# -------------------- FALTA CONFIGURAR QUE SE ENVIEN LOS MOVIMIENTOS DE CADA JUGADOR
-
-
 class TableroAjedrez:
 
     def __init__(self, ventanita):
@@ -49,7 +43,6 @@ class TableroAjedrez:
         self.label_programador = Label(self.canvas, text="Programado por Abraham Pablo", width=50, height=3,
                                        font=("Arial", 8))
         self.label_programador.pack(pady=10)
-        print("Ajedrez 4. Inicia")
         self.dificultad = 'None'
         self.SERVER_IP = 'localhost'
         self.SERVER_PORT = 12345
@@ -122,26 +115,19 @@ class TableroAjedrez:
                 break
             else:
                 if respuesta_deserializada[-1] == 'Negras' or respuesta_deserializada[-1] == 'Blancas':
-                    print("Llego algo")
                     self.dificultad = respuesta_deserializada[0]
-                    print(self.dificultad)
                     self.Tablero_Existe = False
                     self.Color_Socket = True
-                    print("Se manda a dibujar")
                     self.llega_de_socket = True
                 else:
-                    print(self.dificultad)
-                    print("Respuesta recibida:", respuesta_deserializada)
                     self.coordenadas.append(respuesta_deserializada[-2])
                     self.coordenadas.append(respuesta_deserializada[-1])
                     validacion1 = validacion1 + 1
                     if validacion1 == 1:
-                        print("Se manda a validar")
                         self.conteo = 2
                         self.validacion_baja = 1
                         self.ventana.after(0, self.comprobar_movimiento, 0)
                         validacion1 = 0
-                    print(self.coordenadas)
 
     def on_keypress(self, event):
         if event.keysym == "Escape":
@@ -155,7 +141,6 @@ class TableroAjedrez:
             self.coordenadas = []
 
     def dibujar_tablero(self):
-        print("Se dibuja tablero 4")
         self.analisis_jaque()
         for i in range(8):
             for j in range(8):
@@ -197,31 +182,24 @@ class TableroAjedrez:
 
     def comprobar_movimiento(self, coordenada):
         self.conteo = self.conteo + 1
-        print("Se viene a validar a la funcion")
         if self.conteo == 2 or self.validacion_baja == 1:
             match self.coordenadas[-2][-1][0]:
                 case 'P':
-                    print('Peon')
                     self.comprobacion_peon(0, 0, 0, 0)
                 case 'T':
-                    print('Torre')
                     self.comprobacion_torre(0, 0, 0, 0)
                 case 'R':
-                    print('Rey')
                     self.comprobacion_rey(0, 0, 0, 0)
                 case 'A':
-                    print('Alfil')
                     self.comprobacion_alfil(0, 0, 0, 0)
                 case 'D':
-                    print("Dama")
                     self.comprobacion_dama(0, 0, 0, 0)
                 case 'C':
-                    print('Caballo')
                     self.comprobacion_caballo(0, 0, 0, 0)
                 case _:
                     pass
         else:
-            print(self.conteo, " como estamos?")
+            pass
 
     def comprobacion_caballo(self, fila1, columna1, fila2, columna2):
         if self.Validacion or self.Jaque:
@@ -240,7 +218,6 @@ class TableroAjedrez:
             elif ((abs(row1 - row2) == 2 and abs(col1 - col2) == 1) or
                   (abs(row1 - row2) == 1 and abs(col1 - col2) == 2)) and self.board[row2][col2][1] != 'B' \
                     and self.board[row1][col1][1] == 'B':
-                print("Entro aca")
                 self.mover_pieza(row1, col1, row2, col2)
             else:
                 pass
@@ -290,7 +267,6 @@ class TableroAjedrez:
                         if self.board[row1][col1 + i + 1][1] != '  ' and self.Elimina_Enroque_Blanco == False:
                             auxiliar += 1
                             if abs(col2 - col1) == auxiliar:
-                                print("Se mueve 1")
                                 if self.Validacion == False and self.Jaque==False:
                                     self.Elimina_Enroque_Blanco = False
                                     self.mover_enroque(True)
@@ -298,7 +274,7 @@ class TableroAjedrez:
                                     self.mover_pieza(row1, col1, row2, col2)
                                 break
                         else:
-                            print("Entra al else")
+                            pass
                             break
 
                 elif col2 < col1 and self.Eliminar_Enroque_Largo_Blancas == False:
@@ -306,7 +282,6 @@ class TableroAjedrez:
                         if self.board[row1][col1 - i - 1][1] != '  ':
                             auxiliar += 1
                             if abs(col2 - col1) == auxiliar:
-                                print("Se mueve 2")
                                 if self.Validacion == False and self.Jaque == False:
                                     self.Eliminar_Enroque_Largo_Blancas = False
                                     self.mover_pieza(0, 0, 0, 0)
@@ -314,7 +289,6 @@ class TableroAjedrez:
                                     self.mover_pieza(row1, col1, row2, col2)
                                 break
                         else:
-                            print("Entra al else")
                             break
             else:
                 pass
@@ -322,7 +296,6 @@ class TableroAjedrez:
         elif (self.turno_blancas == False or self.Analisis_Jaque == 'Negras') and self.board[row1][col1][1] == 'N' and (
                 self.dificultad == 'Negras' or self.validacion_baja == 1):
             # Si trata de mover en el mismo sitio
-            print("Movimiento de rey negro")
             if (row1 == row2) and (col1 == col2):
                 pass
             # Si trata de mover hacia al frente una casilla
@@ -336,21 +309,18 @@ class TableroAjedrez:
             # Enroque
             elif pieza1 == 'RN' and pieza2 == 'TN' and (
                     self.Elimina_Enroque_Negro == False or self.Eliminar_Enroque_Largo_Negras == False):
-                print("Aqui andamos 20")
                 if col2 > col1 and self.Elimina_Enroque_Negro == False:
                     for i in range(abs(col2 - col1)):
                         if self.board[row1][col1 + i + 1][1] != '  ':
                             auxiliar += 1
                             if abs(col2 - col1) == auxiliar:
                                 if self.Validacion == False and self.Jaque==False:
-                                    print("Se mueve 6")
                                     self.Elimina_Enroque_Blanco = False
                                     self.mover_enroque(True)
                                 else:
                                     self.mover_pieza(row1, col1, row2, col2)
                                 break
                         else:
-                            print("Entra al else")
                             break
                 elif col2 < col1 and self.Eliminar_Enroque_Largo_Negras == False:
                     for i in range(abs(col2 - col1)):
@@ -358,17 +328,15 @@ class TableroAjedrez:
                             auxiliar += 1
                             if abs(col2 - col1) == auxiliar:
                                 if self.Validacion == False and self.Jaque==False:
-                                    print("Se mueve 7")
                                     self.Elimina_Enroque_Negro = False
                                     self.mover_enroque(True)
                                 else:
                                     self.mover_pieza(row1, col1, row2, col2)
                                     break
                         else:
-                            print("Entra al else")
                             break
             else:
-                print("Movimientio invalido 3")
+                pass
 
     def comprobacion_torre(self, fila1, columna1, fila2, columna2):
         if self.Validacion == True or self.Jaque:
@@ -432,7 +400,7 @@ class TableroAjedrez:
                                                                  or self.board[row2][col2][1] != 'B'):
                                 self.Mover_Torre(row1, col1, row2, col2)
                             else:
-                                print("Entra al bucle aqui")
+                                pass
                         else:
                             break
         # movimiento de negras de torre ------------------------
@@ -554,7 +522,7 @@ class TableroAjedrez:
                         else:
                             break
                 else:
-                    print("Movimiento de alfil blanco invalido")
+                    pass
         elif (self.turno_blancas == False or self.Analisis_Jaque == 'Negras') and self.board[row1][col1][1] == 'N' and (
                 self.dificultad == 'Negras' or self.validacion_baja == 1 or self.Jaque):
             # Si trata de mover en el mismo sitio
@@ -606,7 +574,7 @@ class TableroAjedrez:
                         else:
                             break
                 else:
-                    print("Movimiento de alfil blanco invalido")
+                    pass
 
     def comprobacion_peon(self, fila1, columna1, fila2, columna2):
         if self.Validacion == True or self.Jaque:
@@ -652,7 +620,6 @@ class TableroAjedrez:
                     and row1 == self.Posicion_Pieza_Negra_Al_Paso[0][0] and (
                     col2 == self.Posicion_Pieza_Negra_Al_Paso[0][1]):
                 # AQUI ME QUEDE EN LOS CAMBIOSSSSSSS  1 -----------
-                print("Aqui entro 4")
                 if self.Validacion or self.Jaque:
                     self.mover_pieza(row1, col1, row2, col2)
                 else:
@@ -684,7 +651,6 @@ class TableroAjedrez:
                     self.mover_pieza(0, 0, 0, 0)
             # Mover dos casillas el peon y activa la posibilidad de comer al paso
             elif row1 == 1 and (self.board[row1 + 1][col1] == '  ') and (self.board[row2][col2] == '  '):
-                print("Se movio dos casillas peon negro")
                 if (self.Validacion or self.Jaque) and abs(row2 - row1) == 2 and col2 == col1:
                     self.mover_pieza(row1, col1, row2, col2)
                 elif (self.Validacion == False or self.Jaque == False) and abs(row2 - row1) == 2 and col2 == col1:
@@ -805,7 +771,7 @@ class TableroAjedrez:
                             break
 
                 else:
-                    print("Movimiento de dama blanca invalido")
+                    pass
 
 
 
@@ -902,10 +868,10 @@ class TableroAjedrez:
                             break
 
                 else:
-                    print("Movimiento de dama blanca invalido")
+                    pass
 
         else:
-            print("Que paso?")
+            pass
 
     # SECCION DE MOVIMIENTOS DE PIEZAS
     def mover_pieza(self, valrow1, valcol1, valrow2, valcol2):
@@ -914,11 +880,9 @@ class TableroAjedrez:
             self.dibujar_circulos(valrow1, valcol1, valrow2, valcol2)
         elif self.Jaque:
             if self.Analisis_Jaque == 'Negras':
-                print("Se hace añade valor a la matriz de amenazas negras ", self.board[valrow1][valcol1])
                 self.Amenazas_Negras[valrow2][valcol2] = self.Amenazas_Negras[valrow2][valcol2] + 1
                 self.Amenazas_Negras2[valrow2][valcol2] = self.Amenazas_Negras2[valrow2][valcol2] + 1
             else:
-                print("Se hace añade valor a la matriz de amenazas blancas")
                 self.Amenazas_Blancas[valrow2][valcol2] = self.Amenazas_Blancas[valrow2][valcol2] + 1
                 self.Amenazas_Blancas2[valrow2][valcol2] = self.Amenazas_Blancas2[valrow2][valcol2] + 1
         else:
@@ -926,7 +890,6 @@ class TableroAjedrez:
             # AQUI DEBE ESTAR EL ERRORRRR
             self.tablero_ficticio[self.coordenadas[-1][-3]][self.coordenadas[-1][-2]] = self.coordenadas[-2][-1]
             self.tablero_ficticio[self.coordenadas[-2][-3]][self.coordenadas[-2][-2]] = '  '
-            print("El tablero ficticio es",self.tablero_ficticio)
             self.conteo = 0
             if self.sale_de_jaque(self.turno_blancas):
                 if self.turno_blancas:
@@ -934,9 +897,8 @@ class TableroAjedrez:
                 else:
                     self.Al_paso_Para_Negras = False
                 if self.validacion_baja == 1:
-                    print("Ya se hizo un movimiento")
+                    pass
                 else:
-                    print("Entra aqui")
                     lista_enviar = []
                     lista_enviar.append(self.coordenadas[-2])
                     lista_enviar.append(self.coordenadas[-1])
@@ -948,7 +910,6 @@ class TableroAjedrez:
 
                 self.tablero_ficticio = self.board
                 self.turno_blancas = not self.turno_blancas
-                print("Es el turno de blancas", self.turno_blancas)
                 self.Pieza_Seleccionada = []
 
                 self.board[self.coordenadas[-1][-3]][self.coordenadas[-1][-2]] = self.coordenadas[-2][-1]
@@ -959,9 +920,6 @@ class TableroAjedrez:
                 self.validacion_baja = 0
                 self.validacion1 = 0
             else:
-                print(self.conteo)
-                print(self.board)
-                print(self.tablero_ficticio)
                 pass
 
     def mover_enroque(self, Enroque):
@@ -970,7 +928,6 @@ class TableroAjedrez:
         row2 = self.coordenadas[-1][-3]
         col2 = self.coordenadas[-1][-2]
         if self.validacion_baja == 0 and self.Jaque==False and self.Validacion==False:
-            print("Se envio el enroque")
             lista_enviar = []
             lista_enviar.append(self.coordenadas[-2])
             lista_enviar.append(self.coordenadas[-1])
@@ -980,15 +937,12 @@ class TableroAjedrez:
         else:
             pass
         # enroque -------------------------------------------
-        print("Entra al movimiento de enroque")
         if (self.Elimina_Enroque_Blanco == False or self.Eliminar_Enroque_Largo_Blancas == False) and Enroque == True \
                 and self.turno_blancas and self.Jaque == False:
-            print("Enroque de blancas")
             self.conteo = 0
             Se_Puede = self.sale_de_jaque(self.turno_blancas)
             if col2 < col1 and self.Elimina_Enroque_Blanco == False and Se_Puede == True:
                 self.tablero_ficticio = self.board
-                print("Enroque corto")
                 self.board[row1][col2 + 2] = self.board[row2][col2]
                 self.board[row2][col2] = '  '
                 self.board[row1][col2 - 1] = self.board[row1][col1]
@@ -1000,7 +954,6 @@ class TableroAjedrez:
                 self.validacion_baja = 0
                 self.validacion1 = 0
             elif Se_Puede == True and col1< col2:
-                print("Enroque largo")
                 self.tablero_ficticio = self.board
                 self.board[row1][col2 - 2] = self.board[row2][col2]
                 self.board[row2][col2] = '  '
@@ -1016,11 +969,9 @@ class TableroAjedrez:
         elif (
                 self.Elimina_Enroque_Negro == False or self.Eliminar_Enroque_Largo_Negras == False) and Enroque == True and \
                 self.turno_blancas == False and self.Jaque == False:
-            print("Enroque de negras")
             self.conteo = 0
             Se_Puede = self.sale_de_jaque(self.turno_blancas)
             if col2 < col1 and self.Elimina_Enroque_Negro == False and Se_Puede == True:
-                print("Enroque corto")
                 self.tablero_ficticio = self.board
                 self.board[row1][col2 + 2] = self.board[row2][col2]
                 self.board[row2][col2] = '  '
@@ -1033,7 +984,6 @@ class TableroAjedrez:
                 self.validacion_baja = 0
                 self.validacion1 = 0
             elif Se_Puede == True and col2>col1:
-                print("Enroque largo")
                 self.tablero_ficticio = self.board
                 self.board[row1][col2 - 2] = self.board[row2][col2]
                 self.board[row2][col2] = '  '
@@ -1046,18 +996,15 @@ class TableroAjedrez:
                 self.validacion_baja = 0
                 self.validacion1 = 0
         else:
-            print("Que haces aca?")
+            pass
 
     def Mover_Torre(self, valrow1, valcol1, valrow2, valcol2):
-        print("Movi la torre")
         if self.Validacion == True or self.Jaque == True:
             if self.Jaque == True:
                 if self.Analisis_Jaque == 'Negras':
-                    print("Se hace añade valor a la matriz de amenazas")
                     self.Amenazas_Negras[valrow2][valcol2] = self.Amenazas_Negras[valrow2][valcol2] + 1
                     self.Amenazas_Negras2[valrow2][valcol2] = self.Amenazas_Negras2[valrow2][valcol2] + 1
                 else:
-                    print("Se hace añade valor a la matriz de amenazas blancas")
                     self.Amenazas_Blancas[valrow2][valcol2] = self.Amenazas_Blancas[valrow2][valcol2] + 1
                     self.Amenazas_Blancas2[valrow2][valcol2] = self.Amenazas_Blancas2[valrow2][valcol2] + 1
 
@@ -1099,11 +1046,9 @@ class TableroAjedrez:
     def mover_peon_al_paso(self, row1, col1, row2, col2):
         if self.Jaque == True:
             if self.Analisis_Jaque == 'Negras':
-                print("Se añade valor a la matriz de amenazas negras")
                 self.Amenazas_Negras[row2][col2] = self.Amenazas_Negras[row2][col2] + 1
                 self.Amenazas_Negras2[row2][col2] = self.Amenazas_Negras2[row2][col2] + 1
             else:
-                print("Se añade valor a la matriz de amenazas blancas")
                 self.Amenazas_Blancas[row2][col2] = self.Amenazas_Blancas[row2][col2] + 1
                 self.Amenazas_Blancas2[row2][col2] = self.Amenazas_Blancas2[row2][col2] + 1
         elif (self.validacion_baja == 0) and (self.Al_paso_Para_Blancas or self.Al_paso_Para_Blancas):
@@ -1145,7 +1090,6 @@ class TableroAjedrez:
                 self.validacion1 = 0
 
         elif self.Validacion and self.validacion_baja == 0:
-            print("Hay un error?")
             self.dibujar_circulos(row1, col1, self.coordenadas[-1][-3], self.coordenadas[-1][-2])
 
     def Circulos(self):
@@ -1200,12 +1144,10 @@ class TableroAjedrez:
         ventanita.bind("<KeyPress>", self.on_keypress)  # Registrar el evento KeyPress
         self.User_Interface.bind("<Button-1>", self.clics)  # Función para el clic
         self.Tablero_Existe = True
-        print("Ajedrez 5. Inicia")
         self.dibujar_tablero()  # Función que dibuja el tablero
         self.ventana.mainloop()
 
     def analisis_jaque(self):
-        print("Se viene a analizar las amenzas")
         self.Jaque = True
         self.Amenazas_Blancas = \
             [[0, 0, 0, 0, 0, 0, 0, 0],
@@ -1227,7 +1169,6 @@ class TableroAjedrez:
              [0, 0, 0, 0, 0, 0, 0, 0]]
 
         self.Analisis_Jaque = 'Negras'
-        print("Inicia bucle de conteo de negras")
         for k in range(8):
 
             for l in range(8):
@@ -1249,7 +1190,6 @@ class TableroAjedrez:
                                 self.comprobacion_caballo(row2, col2, i, j)
 
         self.Analisis_Jaque = 'Blancas'
-        print("Inicia bucle de conteo de negras")
 
         for m in range(8):
             for n in range(8):
@@ -1270,8 +1210,6 @@ class TableroAjedrez:
                             case 'CB':
                                 self.comprobacion_caballo(row2, col2, o, p)
 
-        print("Amenazas blancas \n", self.Amenazas_Blancas)
-        print("Amenazas negras \n", self.Amenazas_Negras)
         self.Jaque = False
         self.Analisis_Jaque = '  '
         self.tablero_ficticio = self.board
@@ -1292,10 +1230,7 @@ class TableroAjedrez:
                 elif self.tablero_ficticio[i][j] == 'RN':
                     row_negro = i
                     col_negro = j
-        print("Rey negro en: ", row_negro, col_negro)
-        print("Rey blanco en: ", row_blanco, col_blanco)
         # BUSCAR REY NEGRO EN EL TABLERO
-        print("Se viene a analizar si el movimiento es válido")
         self.Jaque = True
         self.Amenazas_Blancas2 = \
             [[0, 0, 0, 0, 0, 0, 0, 0],
@@ -1353,20 +1288,10 @@ class TableroAjedrez:
 
         self.Jaque = False
         self.Analisis_Jaque = '  '
-        print("Se analizan rey blanco en: ", row_blanco, col_blanco)
-        print("Sus amenazas son \n: ", self.Amenazas_Negras2)
-        print("Se analizan rey negro en: ", row_negro, col_negro)
-        print("Sus amenazas son \n: ", self.Amenazas_Blancas2)
-        print(self.Amenazas_Negras2[row_blanco][col_blanco])
-        print(self.Amenazas_Blancas2[row_negro][col_negro])
-        print("El turno es", color)
         if self.Amenazas_Negras2[row_blanco][col_blanco] > 0 and color:
-            print(self.Amenazas_Negras2[row_blanco][col_blanco])
             movimiento = False
         elif self.Amenazas_Blancas2[row_negro][col_negro] >0 and color == False:
-            print(self.Amenazas_Blancas2[row_negro][col_negro])
             movimiento = False
-        print("Movimiento: ", movimiento)
         self.tablero_ficticio = self.board
         return movimiento
 
